@@ -1,0 +1,30 @@
+      <div class="hidden md:flex items-center justify-end">
+        <ul class="nav-wave flex items-center space-x-6">`n          <li class="nav-wave-item">`n            <Link
+            href="/writing"
+            variant="navigation"
+            class="text-[0.9375rem] font-mono"
+          >\n              Writing\n            </Link>\n          </li>\n          <li class="nav-wave-item">\n            <Link
+            href="/about"
+            variant="navigation"
+            class="text-[0.9375rem] font-mono"
+          >\n              About\n            </Link>\n          </li>\n        </ul>
+        <div class="flex items-center justify-center space-x-4 pl-4 ml-4 border-l border-semantic-border">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Search site"
+          >
+            <SearchIcon size="1.25rem" />
+          </button>
+          <button
+            id="theme-toggle-desktop"
+            type="button"
+            class="theme-toggle inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Switch to light theme"
+            aria-pressed="false"
+          >
+            <SunIcon className="icon-sun" size="1.25rem" />
+            <MoonIcon className="icon-moon" size="1.25rem" />
+          </button>
+        </div>
+      </div>

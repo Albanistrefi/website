@@ -1,0 +1,255 @@
+---
+import { Link } from './Link';
+import { SearchIcon, SunIcon, MoonIcon } from './Icons';
+
+interface Props {
+  class?: string;
+  animateTitle?: boolean;
+}
+
+const { class: className, animateTitle = false } = Astro.props;
+---
+<header data-site-header class={`sticky top-0 w-full z-[1000] bg-background-primary/65 backdrop-blur-md ${className || ''}`}>
+  <div class="max-w-[1000px] mx-auto py-4 md:py-6 px-4 md:px-0">
+    <nav class="flex items-center justify-between md:grid md:grid-cols-2 md:items-center" role="navigation" aria-label="Main navigation">
+      {/* Logo/Site Title */}
+      <div class="flex-shrink-0">
+        <Link
+          href="/"
+          variant="unstyled"
+          class="text-text-primary font-medium text-base lg:text-lg hover:text-accent-primary transition-colors duration-200 site-title-link"
+          aria-label="Home"
+        >
+          <span class="sr-only">Alban Istrefi</span>
+          <span
+            aria-hidden="true"
+            class={`header-title-anim ${animateTitle ? '' : 'header-title-anim--static'}`.trim()}
+          >
+            <span class="header-title-anim__row">
+              <span class="header-title-anim__block header-title-anim__block--primary"></span>
+              <span class="header-title-anim__text">
+                Alban Istrefi
+                <span class="header-title-anim__dot"></span>
+              </span>
+            </span>
+          </span>
+        </Link>
+      </div>
+
+      {/* Desktop Right Items: links + icons */}
+      <div class="hidden md:flex items-center justify-end">
+        <div class="flex items-center space-x-6">
+          <Link
+            href="/writing"
+            variant="navigation"
+            class="text-[0.9375rem]"
+          >
+            Writing
+          </Link>
+          <Link
+            href="/about"
+            variant="navigation"
+            class="text-[0.9375rem]"
+          >
+            About
+          </Link>
+        </div>
+        <div class="flex items-center justify-center space-x-4 pl-4 ml-4 border-l border-semantic-border">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Search site"
+          >
+            <SearchIcon size="1.25rem" />
+          </button>
+          <button
+            id="theme-toggle-desktop"
+            type="button"
+            class="theme-toggle inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Switch to light theme"
+            aria-pressed="false"
+          >
+            <SunIcon className="icon-sun" size="1.25rem" />
+            <MoonIcon className="icon-moon" size="1.25rem" />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Button */}
+      <button
+        id="mobile-menu-button"
+        class="md:hidden p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </nav>
+
+    {/* Mobile Menu */}
+    <div
+      id="mobile-menu"
+      class="md:hidden transition-all duration-200 overflow-hidden max-h-0 opacity-0"
+      aria-hidden="true"
+    >
+      <div class="flex flex-col space-y-4 pt-4 border-t border-semantic-border mt-4">
+        {/* Mobile Navigation Links */}
+        <div class="flex flex-col space-y-3">
+          <Link
+            href="/writing"
+            variant="navigation"
+            class="text-[0.8125rem] mobile-menu-link"
+          >
+            Writing
+          </Link>
+          <Link
+            href="/about"
+            variant="navigation"
+            class="text-[0.8125rem] mobile-menu-link"
+          >
+            About
+          </Link>
+        </div>
+
+        {/* Mobile Utility Icons */}
+        <div class="flex items-center justify-center space-x-4 pt-3 border-t border-semantic-border w-full">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Search site"
+          >
+            <SearchIcon size="1.125rem" />
+          </button>
+          <button
+            id="theme-toggle-mobile"
+            type="button"
+            class="theme-toggle inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Switch to light theme"
+            aria-pressed="false"
+          >
+            <SunIcon className="icon-sun" size="1.125rem" />
+            <MoonIcon className="icon-moon" size="1.125rem" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+
+<script is:inline>
+  (() => {
+    const updateThemeToggleState = (buttons, isLight) => {
+      buttons.forEach((btn) => {
+        btn.setAttribute('aria-pressed', String(isLight));
+        btn.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      });
+    };
+
+    const getStoredThemePreference = () => {
+      try {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'light') return true;
+        if (stored === 'dark') return false;
+      } catch (_) {
+        return document.documentElement.classList.contains('theme-light');
+      }
+
+      return window.matchMedia('(prefers-color-scheme: light)').matches;
+    };
+
+    const applyThemeClass = (isLight, options = {}) => {
+      const { animate = true } = options;
+      const root = document.documentElement;
+      if (animate) {
+        root.classList.add('theme-transition');
+      }
+      root.classList.toggle('theme-light', isLight);
+      if (animate) {
+        window.setTimeout(() => root.classList.remove('theme-transition'), 180);
+      }
+    };
+
+    const setTheme = (buttons, isLight, options = {}) => {
+      const { persist = true, animate = true } = options;
+      applyThemeClass(isLight, { animate });
+      if (persist) {
+        try {
+          localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        } catch (_) {
+          /* ignore */
+        }
+      }
+      updateThemeToggleState(buttons, isLight);
+    };
+
+    const hydrateThemePreference = (buttons) => {
+      const isLight = getStoredThemePreference();
+      setTheme(buttons, isLight, { persist: false, animate: false });
+    };
+
+    const initHeaderInteractions = () => {
+      const header = document.querySelector('[data-site-header]');
+      if (!header || header.dataset.interactionsInitialized === 'true') return;
+      header.dataset.interactionsInitialized = 'true';
+
+      const menuButton = header.querySelector('#mobile-menu-button');
+      const mobileMenu = header.querySelector('#mobile-menu');
+
+      if (menuButton && mobileMenu) {
+        const toggleMenu = (open) => {
+          menuButton.setAttribute('aria-expanded', String(open));
+          mobileMenu.setAttribute('aria-hidden', String(!open));
+          menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+          mobileMenu.classList.toggle('max-h-64', open);
+          mobileMenu.classList.toggle('opacity-100', open);
+          mobileMenu.classList.toggle('max-h-0', !open);
+          mobileMenu.classList.toggle('opacity-0', !open);
+
+          const svg = menuButton.querySelector('svg');
+          if (svg) {
+            svg.innerHTML = open
+              ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+              : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+          }
+        };
+
+        menuButton.addEventListener('click', () => {
+          const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+          toggleMenu(!isExpanded);
+        });
+
+        mobileMenu.querySelectorAll('.mobile-menu-link').forEach((link) => {
+          link.addEventListener('click', () => toggleMenu(false));
+        });
+      }
+
+      const themeToggleButtons = header.querySelectorAll('.theme-toggle');
+
+      if (themeToggleButtons.length > 0) {
+        hydrateThemePreference(themeToggleButtons);
+        themeToggleButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const nextIsLight = !document.documentElement.classList.contains('theme-light');
+            setTheme(themeToggleButtons, nextIsLight);
+          });
+        });
+      }
+    };
+
+    const scheduleInit = () => window.requestAnimationFrame(initHeaderInteractions);
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', scheduleInit, { once: true });
+    } else {
+      scheduleInit();
+    }
+
+    document.addEventListener('astro:page-load', scheduleInit);
+  })();
+</script>
+
+

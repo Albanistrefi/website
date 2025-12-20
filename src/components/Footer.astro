@@ -1,0 +1,63 @@
+---
+import { GitHubIcon, LinkedInIcon, EmailIcon } from './Icons';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class={`mt-12 md:mt-16 ${className || ''}`}>
+  <div class="max-w-[1000px] mx-auto px-4 md:px-0">
+    <div class="border-t border-border py-8 md:py-12">
+      {/* Copyright and Social Links - Flex Layout */}
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
+        {/* Copyright */}
+        <p class="text-[0.75rem] md:text-[0.8125rem] text-text-muted order-2 md:order-1 text-center md:text-left">
+          © {currentYear} Alban Istrefi. Content{' '}
+          <a
+            href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-accent-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded underline decoration-1 underline-offset-2"
+          >
+            CC BY-4.0
+          </a>.
+        </p>
+
+        {/* Social Links */}
+        <div class="flex items-center gap-4 md:gap-6 order-1 md:order-2">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Visit GitHub profile"
+          >
+            <GitHubIcon size="1.125rem" />
+          </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Visit LinkedIn profile"
+          >
+            <LinkedInIcon size="1.125rem" />
+          </a>
+          <a
+            href="mailto:example@email.com"
+            class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Send email"
+          >
+            <EmailIcon size="1.125rem" />
+          </a>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import PostLayout from '@/layouts/PostLayout.astro';
+import CodeBlock from '@/components/mdx/CodeBlock.astro';
+import Callout from '@/components/mdx/Callout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+---
+
+<PostLayout post={post} headings={headings}>
+  <Content
+    components={{
+      pre: CodeBlock,
+      Callout: Callout,
+    }}
+  />
+</PostLayout>

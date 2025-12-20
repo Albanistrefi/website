@@ -1,0 +1,98 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Header, Hero, Footer } from '@/components';
+import { getCollection } from 'astro:content';
+import { filterDrafts, sortPostsByDate, formatDate, getReadingTimeMinutes } from '@/utils';
+
+const allPosts = await getCollection('writing');
+const posts = sortPostsByDate(filterDrafts(allPosts)).slice(0, 3);
+const recentPosts = posts.map((post) => {
+  const publishDate = post.data.publishDate;
+  return {
+    slug: post.slug,
+    title: post.data.title,
+    description: post.data.description,
+    tags: post.data.tags ?? [],
+    formattedDate: formatDate(publishDate),
+    month: formatDate(publishDate, 'MMMM'),
+    year: publishDate.getFullYear(),
+    minutesRead: getReadingTimeMinutes(post.body),
+    url: `/writing/${post.slug}`,
+    transitionId: `post-heading-${post.slug}`,
+  };
+});
+---
+
+<Layout
+  title="Alban Istrefi - Developer & Writer"
+  description="Personal blog and portfolio of Alban Istrefi, software developer and technical writer"
+>
+  <Header animateTitle />
+
+  <main class="page-shell mx-auto max-w-[1000px]">
+    <Hero
+      greeting="Hi, I'm Alban Istrefi"
+      bio="I'm a tinkering utilitarian by nature, and on a mission to explore the ever evolving world of AI. This is my space, where I will be writing my thoughts on Product Management, AI & web development. Welcome!"
+      avatarSrc="/images/hero.jpg"
+      socialLinks={{
+        github: "https://github.com",
+        linkedin: "https://linkedin.com",
+        email: "mailto:hello@example.com"
+      }}
+    />
+
+    {recentPosts.length > 0 && (
+      <section id="recent-posts" class="pt-12 pb-6">
+        <div class="mb-8">
+          <h2 class="text-sm font-medium uppercase tracking-wide text-text-tertiary">
+            Recent Writing
+          </h2>
+        </div>
+
+        <ul class="flex flex-col">
+          {recentPosts.map((post) => (
+            <li class="group grid grid-cols-1 md:grid-cols-[2fr_3fr] md:gap-8 border-t border-border py-8 first:border-t-0">
+              
+              {/* Left: Date */}
+              <div class="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-1 text-sm font-mono text-text-tertiary mb-4 md:mb-0 md:pr-8 h-full">
+                <span class="font-medium text-text-secondary">{post.month}</span>
+                <span class="text-text-muted">{post.year}</span>
+              </div>
+
+              {/* Right: Content */}
+              <div class="flex flex-col gap-2">
+                <a
+                  href={post.url}
+                  class="block group-hover:opacity-80 transition-opacity duration-200"
+                >
+                  <h3
+                    class="text-xl font-medium text-text-primary decoration-dashed underline-offset-4 group-hover:text-accent-primary transition-colors"
+                    transition:name={post.transitionId}
+                  >
+                    {post.title}
+                  </h3>
+                </a>
+
+                <div class="text-xs font-mono text-text-tertiary">
+                  {post.formattedDate}{post.tags.length > 0 && `, ${post.tags.map(tag => `#${tag}`).join(', ')}`}
+                </div>
+              </div>
+
+            </li>
+          ))}
+        </ul>
+
+        <div class="flex justify-end mt-8">
+          <a
+            href="/writing"
+            class="text-sm font-medium text-accent-primary hover:text-accent-secondary transition-colors"
+          >
+            View all →
+          </a>
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer />
+</Layout>

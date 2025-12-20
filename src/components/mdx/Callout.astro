@@ -1,0 +1,124 @@
+---
+interface Props {
+  type?: 'info' | 'warning' | 'success' | 'tip' | 'danger';
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+
+const icons = {
+  info: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`,
+  warning: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+  success: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+  tip: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>`,
+  danger: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+};
+
+const defaultTitles = {
+  info: 'Info',
+  warning: 'Warning',
+  success: 'Success',
+  tip: 'Tip',
+  danger: 'Danger',
+};
+---
+
+<div class={`callout callout-${type}`}>
+  <div class="callout-header">
+    <span class="callout-icon" set:html={icons[type]} />
+    <span class="callout-title">{title || defaultTitles[type]}</span>
+  </div>
+  <div class="callout-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .callout {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid;
+    background: var(--callout-bg);
+    border-color: var(--callout-border);
+  }
+
+  .callout-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .callout-icon {
+    display: flex;
+    align-items: center;
+    color: var(--callout-color);
+  }
+
+  .callout-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--callout-color);
+  }
+
+  .callout-content {
+    color: var(--color-text-primary, #e0e1dd);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .callout-content :global(p) {
+    margin: 0;
+  }
+
+  .callout-content :global(p + p) {
+    margin-top: 0.75rem;
+  }
+
+  .callout-content :global(code) {
+    background: var(--color-code-inline-bg, rgba(119, 141, 169, 0.2));
+    color: var(--color-primary, #778da9);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.875em;
+  }
+
+  /* Info variant */
+  .callout-info {
+    --callout-bg: rgba(56, 189, 248, 0.18);
+    --callout-border: var(--color-info, #38bdf8);
+    --callout-color: var(--color-info, #38bdf8);
+  }
+
+  /* Warning variant */
+  .callout-warning {
+    --callout-bg: rgba(250, 204, 21, 0.2);
+    --callout-border: var(--color-warning, #facc15);
+    --callout-color: var(--color-warning, #facc15);
+  }
+
+  /* Success variant */
+  .callout-success {
+    --callout-bg: rgba(74, 222, 128, 0.2);
+    --callout-border: var(--color-success, #4ade80);
+    --callout-color: var(--color-success, #4ade80);
+  }
+
+  /* Tip variant */
+  .callout-tip {
+    --callout-bg: rgba(119, 141, 169, 0.18);
+    --callout-border: var(--color-primary, #778da9);
+    --callout-color: var(--color-primary, #778da9);
+  }
+
+  /* Danger variant */
+  .callout-danger {
+    --callout-bg: rgba(248, 113, 113, 0.16);
+    --callout-border: var(--color-danger, #F87171);
+    --callout-color: var(--color-danger, #F87171);
+  }
+</style>

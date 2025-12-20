@@ -1,0 +1,82 @@
+---
+import { Button } from './Button';
+import { Link } from './Link';
+import { GitHubIcon, LinkedInIcon, EmailIcon } from './Icons';
+
+interface Props {
+  avatarSrc?: string;
+  greeting?: string;
+  bio?: string;
+  socialLinks?: {
+    github?: string;
+    linkedin?: string;
+    email?: string;
+  };
+  showCTA?: boolean;
+  class?: string;
+}
+
+const {
+  avatarSrc = "",
+  greeting = "Hello, I'm a Developer",
+  bio = "I'm a Product Manager that loves everything web development and AI",
+  socialLinks = {
+    github: "https://github.com",
+    linkedin: "https://linkedin.com",
+    email: "mailto:example@email.com"
+  },
+  showCTA = true,
+  class: className
+} = Astro.props;
+---
+
+<section class={`py-8 md:py-12 ${className || ''}`}>
+  <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+    {/* Avatar */}
+    <div class="flex-shrink-0">
+      <div class="profile-avatar w-[140px] h-[140px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden">
+        {avatarSrc ? (
+          <img
+            src={avatarSrc}
+            alt="Profile Avatar"
+            class="w-full h-full object-cover transform-gpu scale-[3.3]"
+            style="object-position: 60% 32%; transform-origin: 60% 32%; will-change: transform; backface-visibility: hidden;"
+          />
+        ) : (
+          <div class="w-full h-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-background-primary text-[4rem] font-heading font-bold">
+            AI
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* Content */}
+    <div class="flex-1 text-center md:text-left">
+      <h1 class="text-text-primary mb-3 md:mb-4 text-[1.75rem] md:text-[2.5rem] leading-[1.3] md:leading-[1.2] font-heading font-normal tracking-[-0.02em]">
+        {greeting}
+      </h1>
+      <p class="text-text-secondary mb-5 md:mb-6 leading-[1.6] text-[1.0625rem] md:text-[1.125rem] max-w-none font-mono">
+        {bio}
+      </p>
+
+      {/* Social Links and CTA */}
+      <div class="flex items-center justify-center md:justify-start gap-[0.875rem] md:gap-4">
+        {socialLinks.github && (
+          <Link href={socialLinks.github} external showExternalIcon={false} className="inline-flex items-center">
+            <GitHubIcon variant="social" size="1.25rem" aria-label="GitHub Profile" />
+          </Link>
+        )}
+        {socialLinks.linkedin && (
+          <Link href={socialLinks.linkedin} external showExternalIcon={false} className="inline-flex items-center">
+            <LinkedInIcon variant="social" size="1.25rem" aria-label="LinkedIn Profile" />
+          </Link>
+        )}
+        {socialLinks.email && (
+          <Link href={socialLinks.email} showExternalIcon={false} className="inline-flex items-center">
+            <EmailIcon variant="social" size="1.25rem" aria-label="Email Contact" />
+          </Link>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

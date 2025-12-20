@@ -1,0 +1,104 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Header, Footer } from '@/components';
+import { getCollection } from 'astro:content';
+import { filterDrafts, sortPostsByDate, groupPostsByYear, formatDate, getReadingTimeMinutes } from '@/utils';
+
+const allPosts = await getCollection('writing');
+const posts = sortPostsByDate(filterDrafts(allPosts));
+const postsByYear = groupPostsByYear(posts);
+---
+
+<Layout
+  title="Writing - Alban Istrefi"
+  description="Articles, tutorials, and thoughts on web development, design systems, and software engineering"
+>
+  <Header />
+
+  <main class="page-shell mx-auto max-w-[800px]">
+    <div class="mb-12 mt-8 space-y-2">
+      <h1 class="text-[1.5rem] leading-[1.3] -tracking-[0.02em] md:text-[2rem] md:leading-[1.2] font-semibold">
+        Writing
+      </h1>
+      <p class="text-text-secondary text-sm">
+        {posts.length} {posts.length === 1 ? 'article' : 'articles'} on web development, design systems, and software engineering
+      </p>
+    </div>
+
+    {Object.entries(postsByYear)
+      .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
+      .map(([year, yearPosts]) => (
+        <section class="mb-12" id={`posts-${year}`}>
+          <h2 class="text-sm font-medium uppercase tracking-wide text-text-tertiary mb-6">
+            {year}
+          </h2>
+
+          <ul>
+            {yearPosts.map((post) => {
+              const publishDate = post.data.publishDate;
+              const formattedDate = formatDate(publishDate);
+              const yearValue = publishDate.getFullYear();
+              const minutesRead = getReadingTimeMinutes(post.body);
+              const tags = post.data.tags ?? [];
+              const description = post.data.description;
+              const transitionId = `post-heading-${post.slug}`;
+
+              return (
+                <li class="my-8">
+                  <div class="space-y-3">
+                    <a
+                      href={`/writing/${post.slug}`}
+                      class="inline-block text-lg font-medium text-accent-primary transition-colors decoration-dashed underline-offset-4 hover:text-accent-secondary focus-visible:no-underline focus-visible:outline-offset-0"
+                    >
+                      <h3
+                        class="text-lg font-medium decoration-dashed hover:underline"
+                        transition:name={transitionId}
+                      >
+                        {post.data.title}
+                      </h3>
+                    </a>
+
+                    <div class="flex items-center gap-3 mb-3 text-sm text-text-tertiary">
+                      <span>{formattedDate}</span>
+                      <span aria-hidden="true">&bull;</span>
+                      <span>{yearValue}</span>
+                      {minutesRead > 0 && (
+                        <>
+                          <span aria-hidden="true">&bull;</span>
+                          <span>{minutesRead} min read</span>
+                        </>
+                      )}
+                    </div>
+
+                    {tags.length > 0 && (
+                      <div class="flex gap-4 items-start flex-wrap text-xs text-text-tertiary">
+                        {tags.map((tag) => (
+                          <span class="bg-background-secondary px-2 py-1 rounded tag-chip">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {description && (
+                      <p class="text-sm text-text-secondary">
+                        {description}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+
+    {posts.length === 0 && (
+      <div class="text-center py-12 text-text-secondary">
+        No posts yet. Check back soon!
+      </div>
+    )}
+  </main>
+
+  <Footer />
+</Layout>

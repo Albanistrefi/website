@@ -1,0 +1,240 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  lightbox?: boolean;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  width = 800,
+  height = 600,
+  loading = 'lazy',
+  lightbox = true,
+} = Astro.props;
+
+// Generate a unique ID for lightbox functionality
+const imageId = `image-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<figure class="mdx-image">
+  {lightbox ? (
+    <button
+      class="image-lightbox-trigger"
+      data-image-id={imageId}
+      aria-label={`Open ${alt} in lightbox`}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading={loading}
+        class="image"
+      />
+    </button>
+  ) : (
+    <Image
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      class="image"
+    />
+  )}
+  {caption && <figcaption class="image-caption">{caption}</figcaption>}
+</figure>
+
+<!-- Lightbox overlay -->
+{lightbox && (
+  <div class="lightbox" id={imageId} hidden>
+    <button class="lightbox-close" aria-label="Close lightbox">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="lightbox-content">
+      <img src={src} alt={alt} />
+      {caption && <p class="lightbox-caption">{caption}</p>}
+    </div>
+  </div>
+)}
+
+<style>
+  .mdx-image {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .image-lightbox-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: zoom-in;
+    transition: transform 0.2s ease;
+  }
+
+  .image-lightbox-trigger:hover {
+    transform: scale(1.02);
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border, #1f3249);
+    display: block;
+  }
+
+  .image-caption {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary, #c2cad4);
+    font-style: italic;
+  }
+
+  /* Lightbox styles */
+  .lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10000;
+  }
+
+  .lightbox-close:hover {
+    background: var(--color-primary, #778da9);
+    border-color: var(--color-primary, #778da9);
+  }
+
+  .lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+
+  .lightbox-caption {
+    color: #fff;
+    font-size: 0.875rem;
+    text-align: center;
+    font-style: italic;
+  }
+</style>
+
+<script>
+  // Lightbox functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const triggers = document.querySelectorAll('.image-lightbox-trigger');
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const imageId = trigger.getAttribute('data-image-id');
+        const lightbox = document.getElementById(imageId!);
+        if (lightbox) {
+          lightbox.removeAttribute('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    // Close lightbox on close button click
+    const closeButtons = document.querySelectorAll('.lightbox-close');
+    closeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const lightbox = button.closest('.lightbox');
+        if (lightbox) {
+          lightbox.setAttribute('hidden', '');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    // Close lightbox on overlay click
+    const lightboxes = document.querySelectorAll('.lightbox');
+    lightboxes.forEach((lightbox) => {
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+          lightbox.setAttribute('hidden', '');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    // Close lightbox on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const openLightbox = document.querySelector('.lightbox:not([hidden])');
+        if (openLightbox) {
+          openLightbox.setAttribute('hidden', '');
+          document.body.style.overflow = '';
+        }
+      }
+    });
+  });
+</script>
