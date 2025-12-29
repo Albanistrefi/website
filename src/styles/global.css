@@ -54,12 +54,10 @@
   --color-info: #38bdf8;
   --color-error: var(--color-danger);
 
-  /* Font Families - Prioritizing Inter */
-  --font-family-body: 'Inter', 'Geist', 'PP Neue Montreal', 'PP Supply Sans', system-ui,
-    -apple-system, 'Segoe UI', sans-serif;
-  --font-family-heading: 'Inter', 'Geist', 'PP Neue Montreal', 'PP Supply Sans', system-ui,
-    -apple-system, 'Segoe UI', sans-serif;
-  --font-family-code: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  /* Font Families - Using Inter exclusively */
+  --font-family-body: 'Inter', sans-serif;
+  --font-family-heading: 'Inter', sans-serif;
+  --font-family-code: 'Inter', sans-serif;
 
   /* Font Sizes */
   --font-size-xs: 0.75rem;
@@ -122,6 +120,13 @@
   /* Shadows (minimal use in dark theme) */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  /* Activity Calendar (GitHub Greens - Dark Mode) */
+  --calendar-level-0: #161b22;
+  --calendar-level-1: #0e4429;
+  --calendar-level-2: #006d32;
+  --calendar-level-3: #26a641;
+  --calendar-level-4: #39d353;
 }
 
 /* Base Styles */
@@ -161,14 +166,7 @@ body {
 }
 
 .font-mono {
-  font-family: var(
-    --font-family-code,
-    'Geist Mono',
-    'JetBrains Mono',
-    'Fira Code',
-    'PP Supply Sans Mono',
-    monospace
-  );
+  font-family: var(--font-family-body);
 }
 
 :root {
@@ -225,16 +223,21 @@ body {
   --color-muted: var(--color-text-muted);
   --color-code-bg: #edf1f5;
   --color-code-inline-bg: rgba(65, 90, 119, 0.12);
-}
 
-/* Short fade when toggling themes (enabled briefly via JS) */
-.theme-transition,
-.theme-transition * {
-  transition: background-color 150ms ease, color 150ms ease,
-    border-color 150ms ease, fill 150ms ease, stroke 150ms ease;
+  /* Activity Calendar (GitHub Greens - Light Mode) */
+  --calendar-level-0: #ebedf0;
+  --calendar-level-1: #9be9a8;
+  --calendar-level-2: #40c463;
+  --calendar-level-3: #30a14e;
+  --calendar-level-4: #216e39;
 }
-
-/* Custom Scrollbar */
+  
+  /* GitHub Activity Calendar Text Color */
+  .github-activity-calendar text {
+    fill: var(--color-text-secondary) !important;
+  }
+  
+  /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }

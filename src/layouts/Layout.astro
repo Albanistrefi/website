@@ -1,6 +1,10 @@
 ---
 import '../styles/global.css';
 import { ViewTransitions } from 'astro:transitions';
+import appleTouchIcon from '../favicon/apple-touch-icon.png';
+import faviconSvg from '../favicon/favicon.svg';
+import favicon96 from '../favicon/favicon-96x96.png';
+import faviconIco from '../favicon/favicon.ico';
 
 interface Props {
   title: string;
@@ -18,8 +22,14 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={faviconSvg.src} />
+    <link rel="icon" type="image/png" href={favicon96.src} sizes="96x96" />
+    <link rel="shortcut icon" href={faviconIco.src} />
+    <link rel="apple-touch-icon" href={appleTouchIcon.src} />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <script is:inline>
       (() => {
         const applyPreferredTheme = (root) => {

@@ -2,9 +2,10 @@
 import { Button } from './Button';
 import { Link } from './Link';
 import { GitHubIcon, LinkedInIcon, EmailIcon } from './Icons';
+import { Image } from 'astro:assets';
 
 interface Props {
-  avatarSrc?: string;
+  avatarSrc?: any;
   greeting?: string;
   bio?: string;
   socialLinks?: {
@@ -36,12 +37,22 @@ const {
     <div class="flex-shrink-0">
       <div class="profile-avatar w-[140px] h-[140px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden">
         {avatarSrc ? (
-          <img
-            src={avatarSrc}
-            alt="Profile Avatar"
-            class="w-full h-full object-cover transform-gpu scale-[3.3]"
-            style="object-position: 60% 32%; transform-origin: 60% 32%; will-change: transform; backface-visibility: hidden;"
-          />
+          typeof avatarSrc === 'string' ? (
+            <img
+              src={avatarSrc}
+              alt="Profile Avatar"
+              class="w-full h-full object-cover"
+            />
+          ) : (
+            <Image
+              src={avatarSrc}
+              alt="Profile Avatar"
+              width={540}
+              height={540}
+              class="w-full h-full object-cover transform-gpu scale-120"
+              style="object-position: 50% 0%; transform-origin: top;"
+            />
+          )
         ) : (
           <div class="w-full h-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-background-primary text-[4rem] font-heading font-bold">
             AI

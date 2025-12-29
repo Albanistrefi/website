@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import { Header, Hero, Footer } from '@/components';
 import { getCollection } from 'astro:content';
 import { filterDrafts, sortPostsByDate, formatDate, getReadingTimeMinutes } from '@/utils';
+import heroImage from '@assets/alban.jpg';
 
 const allPosts = await getCollection('writing');
 const posts = sortPostsByDate(filterDrafts(allPosts)).slice(0, 3);
@@ -24,16 +25,16 @@ const recentPosts = posts.map((post) => {
 ---
 
 <Layout
-  title="Alban Istrefi - Developer & Writer"
+  title="Alban Istrefi"
   description="Personal blog and portfolio of Alban Istrefi, software developer and technical writer"
 >
   <Header animateTitle />
 
-  <main class="page-shell mx-auto max-w-[1000px]">
+  <main class="page-shell mx-auto max-w-[900px]">
     <Hero
       greeting="Hi, I'm Alban Istrefi"
       bio="I'm a tinkering utilitarian by nature, and on a mission to explore the ever evolving world of AI. This is my space, where I will be writing my thoughts on Product Management, AI & web development. Welcome!"
-      avatarSrc="/images/hero.jpg"
+      avatarSrc={heroImage}
       socialLinks={{
         github: "https://github.com",
         linkedin: "https://linkedin.com",
@@ -74,7 +75,7 @@ const recentPosts = posts.map((post) => {
                 </a>
 
                 <div class="text-xs font-mono text-text-tertiary">
-                  {post.formattedDate}{post.tags.length > 0 && `, ${post.tags.map(tag => `#${tag}`).join(', ')}`}
+                  {post.formattedDate}{post.tags.length > 0 && ` | ${post.tags.map(tag => `#${tag}`).join(', ')}`}
                 </div>
               </div>
 
