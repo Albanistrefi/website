@@ -130,6 +130,13 @@
 }
 
 /* Base Styles */
+html,
+body {
+  overflow-x: clip;
+  position: relative;
+  width: 100%;
+}
+
 body {
   background-color: var(--color-background-primary);
   color: var(--color-text-primary);

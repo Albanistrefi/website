@@ -11,11 +11,14 @@ interface Props {
 
 const { class: className, animateTitle = false } = Astro.props;
 ---
-<header data-site-header class={`sticky top-0 w-full z-[1000] bg-background-primary/65 backdrop-blur-md ${className || ''}`}>
-  <div class="max-w-[900px] mx-auto py-4 md:py-6 px-4 md:px-0">
-    <nav class="flex items-center justify-between md:grid md:grid-cols-2 md:items-center" role="navigation" aria-label="Main navigation">
-      {/* Logo/Site Title */}
-      <div class="flex-shrink-0">
+<header data-site-header class={`sticky top-0 w-full z-[1000] ${className || ''}`}>
+  {/* Actual Header Bar Background - Surgical separation to allow solid drawer */}
+  <div class="absolute inset-0 h-full bg-background-primary/80 backdrop-blur-md border-b border-border/50 pointer-events-none"></div>
+
+  <div class="relative max-w-[900px] mx-auto py-4 md:py-6 px-4 md:px-0">
+    <nav class="flex items-center justify-between" role="navigation" aria-label="Main navigation">
+      {/* Logo/Site Title - Always on the left */}
+      <div class="flex-shrink-0 flex items-center">
         <Link
           href="/"
           variant="unstyled"
@@ -30,7 +33,7 @@ const { class: className, animateTitle = false } = Astro.props;
           >
             <span class="header-title-anim__row">
               <span class="header-title-anim__block header-title-anim__block--primary"></span>
-              <span class="header-title-anim__text">
+              <span class="header-title-anim__text uppercase">
                 ALBANISTREFI
                 <span class="header-title-anim__dot"></span>
               </span>
@@ -57,7 +60,7 @@ const { class: className, animateTitle = false } = Astro.props;
             About
           </Link>
         </div>
-        <div class="flex items-center justify-center space-x-4 pl-4 ml-4 border-l border-semantic-border">
+        <div class="flex items-center justify-center space-x-4 pl-4 ml-4 border-l border-border">
           <button
             type="button"
             class="inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
@@ -92,81 +95,101 @@ const { class: className, animateTitle = false } = Astro.props;
         </div>
       </div>
 
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu Button - Moved back to the right */}
       <button
         id="mobile-menu-button"
-        class="md:hidden p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+        class="md:hidden relative z-[1100] p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors duration-200 focus:outline-none"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </nav>
+  </div>
 
-    {/* Mobile Menu */}
-    <div
-      id="mobile-menu"
-      class="md:hidden transition-all duration-200 overflow-hidden max-h-0 opacity-0"
-      aria-hidden="true"
-    >
-      <div class="flex flex-col space-y-4 pt-4 border-t border-semantic-border mt-4">
-        {/* Mobile Navigation Links */}
-        <div class="flex flex-col space-y-3">
-          <Link
-            href="/writing"
-            variant="navigation"
-            class="text-[0.8125rem] mobile-menu-link"
-          >
-            Writing
-          </Link>
-          <Link
-            href="/about"
-            variant="navigation"
-            class="text-[0.8125rem] mobile-menu-link"
-          >
-            About
-          </Link>
-        </div>
+  {/* Mobile Menu Drawer Overlay - Solid, high-z overlay */}
+  <div
+    id="mobile-menu-overlay"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1050] opacity-0 pointer-events-none invisible transition-all duration-300 md:hidden"
+    aria-hidden="true"
+  ></div>
 
-        {/* Mobile Utility Icons */}
-        <div class="flex items-center justify-center space-x-4 pt-3 border-t border-semantic-border w-full">
+  {/* Mobile Menu Drawer - Slide from LEFT, Full Width */}
+  <div
+    id="mobile-menu"
+    class="fixed top-0 left-0 bottom-0 w-full bg-[#000000] [.theme-light_&]:bg-[#ffffff] z-[1080] -translate-x-full invisible transition-all duration-300 ease-in-out md:hidden shadow-2xl"
+    aria-hidden="true"
+  >
+    <div class="flex flex-col h-full p-8 pt-24 max-w-[400px] mx-auto">
+      {/* Mobile Navigation Links */}
+      <nav class="flex flex-col space-y-1">
+        <a
+          href="/writing"
+          class="flex items-center justify-between py-6 border-b border-border/50 text-2xl font-medium text-text-primary group mobile-menu-link"
+        >
+          <span>Writing</span>
+          <svg class="w-6 h-6 text-text-muted group-hover:text-accent-primary transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+        <a
+          href="/about"
+          class="flex items-center justify-between py-6 border-b border-border/50 text-2xl font-medium text-text-primary group mobile-menu-link"
+        >
+          <span>About</span>
+          <svg class="w-6 h-6 text-text-muted group-hover:text-accent-primary transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </nav>
+
+      <div class="mt-auto mb-8">
+         <h2 class="text-[10px] font-bold uppercase tracking-widest text-text-tertiary mb-6">
+          Preferences & Search
+        </h2>
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-4 bg-background-secondary rounded-2xl border border-border/50">
+            <span class="text-sm font-medium text-text-secondary">Theme</span>
+             <button
+              id="theme-toggle-mobile"
+              type="button"
+              class="theme-toggle group relative inline-flex h-8 w-16 items-center rounded-full border-2 border-border bg-background-primary transition-all focus:outline-none"
+              aria-label="Switch to light theme"
+              aria-pressed="false"
+            >
+              <span class="sr-only">Toggle theme</span>
+              <span
+                class="theme-toggle-thumb pointer-events-none absolute left-1 top-[2px] h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out z-10"
+              ></span>
+              <div class="absolute inset-0 z-20 pointer-events-none flex items-center">
+                <div class="sun-icon-wrapper absolute left-[9px] transition-colors duration-300">
+                  <SunIcon size="0.875rem" />
+                </div>
+                <div class="moon-icon-wrapper absolute right-[9px] transition-colors duration-300">
+                  <MoonIcon size="0.875rem" />
+                </div>
+              </div>
+            </button>
+          </div>
+
           <button
             type="button"
-            class="inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            class="flex items-center justify-between p-4 bg-background-secondary rounded-2xl border border-border/50 text-text-secondary hover:text-accent-primary transition-colors w-full group"
             aria-label="Search site"
           >
-            <SearchIcon size="1.125rem" />
-          </button>
-          
-          {/* Mobile Theme Slider */}
-          <button
-            id="theme-toggle-mobile"
-            type="button"
-            class="theme-toggle group relative inline-flex h-8 w-16 items-center rounded-full border-2 border-border bg-background-secondary transition-all focus:outline-none"
-            aria-label="Switch to light theme"
-            aria-pressed="false"
-          >
-            <span class="sr-only">Toggle theme</span>
-            <span
-              class="theme-toggle-thumb pointer-events-none absolute left-1 top-[2px] h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out z-10"
-            ></span>
-            <div class="absolute inset-0 z-20 pointer-events-none flex items-center">
-              <div class="sun-icon-wrapper absolute left-[9px] transition-colors duration-300">
-                <SunIcon size="0.875rem" />
-              </div>
-              <div class="moon-icon-wrapper absolute right-[9px] transition-colors duration-300">
-                <MoonIcon size="0.875rem" />
-              </div>
+            <div class="flex items-center gap-3">
+              <SearchIcon size="1.25rem" />
+              <span class="text-base font-medium">Search</span>
             </div>
           </button>
         </div>
       </div>
     </div>
   </div>
-
 </header>
 
 <script is:inline>
@@ -185,28 +208,20 @@ const { class: className, animateTitle = false } = Astro.props;
             thumb.style.transition = 'none';
           }
 
-          // Slide logic: left (0) for light, right (1.75rem) for dark (perfectly centered for w-16 track)
+          // Simple translateX logic
           thumb.style.transform = isLight ? 'translateX(0)' : 'translateX(1.75rem)';
           
-          // Light Mode: Border grey thumb
-          // Dark Mode: White thumb
           thumb.style.backgroundColor = isLight ? 'var(--color-border)' : '#ffffff';
           thumb.style.border = 'none';
 
           if (!shouldAnimate) {
-            // Force reflow to ensure the style change applies without transition
             void thumb.offsetWidth;
             thumb.style.transition = '';
           }
         }
 
         if (sunWrapper && moonWrapper) {
-          // Light Mode: Sun is White (on Black thumb)
-          // Dark Mode: Sun is Muted (on Dark track)
           sunWrapper.style.color = isLight ? '#ffffff' : 'var(--color-text-muted)';
-          
-          // Light Mode: Moon is Muted (on Light track)
-          // Dark Mode: Moon is Black (on White thumb)
           moonWrapper.style.color = isLight ? 'var(--color-text-muted)' : '#000000';
         }
       });
@@ -254,22 +269,36 @@ const { class: className, animateTitle = false } = Astro.props;
 
       const menuButton = header.querySelector('#mobile-menu-button');
       const mobileMenu = header.querySelector('#mobile-menu');
+      const overlay = header.querySelector('#mobile-menu-overlay');
 
-      if (menuButton && mobileMenu) {
+      if (menuButton && mobileMenu && overlay) {
         const toggleMenu = (open) => {
           menuButton.setAttribute('aria-expanded', String(open));
           mobileMenu.setAttribute('aria-hidden', String(!open));
-          menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-          mobileMenu.classList.toggle('max-h-64', open);
-          mobileMenu.classList.toggle('opacity-100', open);
-          mobileMenu.classList.toggle('max-h-0', !open);
-          mobileMenu.classList.toggle('opacity-0', !open);
+          overlay.setAttribute('aria-hidden', String(!open));
+          
+          if (open) {
+            mobileMenu.classList.remove('-translate-x-full', 'invisible');
+            overlay.classList.remove('opacity-0', 'pointer-events-none', 'invisible');
+            document.body.style.overflow = 'hidden';
+          } else {
+            mobileMenu.classList.add('-translate-x-full');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+              if (menuButton.getAttribute('aria-expanded') === 'false') {
+                mobileMenu.classList.add('invisible');
+                overlay.classList.add('invisible');
+              }
+            }, 300);
+          }
 
-          const svg = menuButton.querySelector('svg');
-          if (svg) {
-            svg.innerHTML = open
-              ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
-              : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+          const path = menuButton.querySelector('#menu-icon-path');
+          if (path) {
+            path.setAttribute('d', open 
+              ? 'M6 18L18 6M6 6l12 12' 
+              : 'M4 6h16M4 12h16M4 18h16');
           }
         };
 
@@ -277,6 +306,8 @@ const { class: className, animateTitle = false } = Astro.props;
           const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
           toggleMenu(!isExpanded);
         });
+
+        overlay.addEventListener('click', () => toggleMenu(false));
 
         mobileMenu.querySelectorAll('.mobile-menu-link').forEach((link) => {
           link.addEventListener('click', () => toggleMenu(false));
@@ -307,5 +338,3 @@ const { class: className, animateTitle = false } = Astro.props;
     document.addEventListener('astro:page-load', scheduleInit);
   })();
 </script>
-
-
