@@ -2,7 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import { Header, Footer } from '@/components';
 import { getCollection } from 'astro:content';
-import { filterDrafts, sortPostsByDate, groupPostsByYear, formatDate, getReadingTimeMinutes } from '@/utils';
+import { filterDrafts, sortPostsByDate, groupPostsByYear, formatDate } from '@/utils';
 
 const allPosts = await getCollection('writing');
 const posts = sortPostsByDate(filterDrafts(allPosts));

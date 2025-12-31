@@ -11,14 +11,14 @@ interface Props {
 
 const { class: className, animateTitle = false } = Astro.props;
 ---
-<header data-site-header class={`sticky top-0 w-full z-[1000] ${className || ''}`}>
-  {/* Actual Header Bar Background - Surgical separation to allow solid drawer */}
-  <div class="absolute inset-0 h-full bg-background-primary/80 backdrop-blur-md border-b border-border/50 pointer-events-none"></div>
+<header data-site-header class={`sticky top-0 w-full z-[1000] [&.is-menu-open]:translate-y-0 [&.is-menu-open]:fixed [&.is-menu-open]:inset-x-0 ${className || ''}`}>
+  {/* Header Glass Background */}
+  <div class="absolute inset-0 bg-background-primary/80 backdrop-blur-md"></div>
 
   <div class="relative max-w-[900px] mx-auto py-4 md:py-6 px-4 md:px-0">
     <nav class="flex items-center justify-between" role="navigation" aria-label="Main navigation">
-      {/* Logo/Site Title - Always on the left */}
-      <div class="flex-shrink-0 flex items-center">
+      {/* Logo/Site Title */}
+      <div class="flex-shrink-0">
         <Link
           href="/"
           variant="unstyled"
@@ -26,7 +26,7 @@ const { class: className, animateTitle = false } = Astro.props;
           aria-label="Home"
         >
           <span class="sr-only">Alban Istrefi</span>
-          <Image src={aIcon} alt="Alban Istrefi Logo" width={64} height={64} class="w-8 h-8 object-contain brightness-0 invert [.theme-light_&]:brightness-100 [.theme-light_&]:invert-0" format="png" quality={100} />
+          <Image src={aIcon} id="site-logo-img" alt="Alban Istrefi Logo" width={64} height={64} class="w-8 h-8 object-contain brightness-0 invert [.theme-light_&]:brightness-100 [.theme-light_&]:invert-0 transition-transform duration-500 ease-in-out" format="png" quality={100} />
           <span
             aria-hidden="true"
             class={`header-title-anim ${animateTitle ? '' : 'header-title-anim--static'}`.trim()}
@@ -42,30 +42,14 @@ const { class: className, animateTitle = false } = Astro.props;
         </Link>
       </div>
 
-      {/* Desktop Right Items: links + icons */}
+      {/* Desktop Navigation */}
       <div class="hidden md:flex items-center justify-end">
         <div class="flex items-center space-x-6">
-          <Link
-            href="/writing"
-            variant="navigation"
-            class="text-[0.9375rem]"
-          >
-            Writing
-          </Link>
-          <Link
-            href="/about"
-            variant="navigation"
-            class="text-[0.9375rem]"
-          >
-            About
-          </Link>
+          <Link href="/writing" variant="navigation" class="text-[0.9375rem]">Writing</Link>
+          <Link href="/about" variant="navigation" class="text-[0.9375rem]">About</Link>
         </div>
         <div class="flex items-center justify-center space-x-4 pl-4 ml-4 border-l border-border">
-          <button
-            type="button"
-            class="inline-flex items-center justify-center leading-none focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
-            aria-label="Search site"
-          >
+          <button type="button" class="text-text-primary hover:text-accent-primary transition-colors" aria-label="Search site">
             <SearchIcon size="1.25rem" />
           </button>
           <button
@@ -73,118 +57,80 @@ const { class: className, animateTitle = false } = Astro.props;
             type="button"
             class="theme-toggle group relative inline-flex h-8 w-16 items-center rounded-full border-2 border-border bg-background-secondary transition-all hover:border-accent-primary focus:outline-none"
             aria-label="Switch to light theme"
-            aria-pressed="false"
           >
-            <span class="sr-only">Toggle theme</span>
-            
-            {/* Sliding Thumb Circle */}
-            <span
-              class="theme-toggle-thumb pointer-events-none absolute left-1 top-[2px] h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out z-10"
-            ></span>
-
-            {/* Icons - Precisely positioned to match thumb centers */}
             <div class="absolute inset-0 z-20 pointer-events-none flex items-center">
-              <div class="sun-icon-wrapper absolute left-[9px] transition-colors duration-300">
-                <SunIcon size="0.875rem" />
-              </div>
-              <div class="moon-icon-wrapper absolute right-[9px] transition-colors duration-300">
-                <MoonIcon size="0.875rem" />
-              </div>
+              <span class="absolute left-[9px] top-1/2 -translate-y-1/2 text-text-muted/70">
+                <SunIcon size="0.85rem" />
+              </span>
+              <span class="absolute right-[9px] top-1/2 -translate-y-1/2 text-text-muted/70">
+                <MoonIcon size="0.85rem" />
+              </span>
             </div>
+            <span class="theme-toggle-thumb absolute left-1 top-[2px] h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out z-10"></span>
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Button - Moved back to the right */}
+      {/* Mobile Menu Toggle */}
       <button
         id="mobile-menu-button"
-        class="md:hidden relative z-[1100] p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors duration-200 focus:outline-none"
-        aria-label="Open menu"
+        class="md:hidden relative z-[1100] p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors focus:outline-none"
+        aria-label="Toggle menu"
         aria-expanded="false"
-        aria-controls="mobile-menu"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </nav>
   </div>
 
-  {/* Mobile Menu Drawer Overlay - Solid, high-z overlay */}
-  <div
-    id="mobile-menu-overlay"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1050] opacity-0 pointer-events-none invisible transition-all duration-300 md:hidden"
-    aria-hidden="true"
-  ></div>
-
-  {/* Mobile Menu Drawer - Slide from LEFT, Full Width */}
+  {/* Mobile Menu Content - Starts directly below header, slides from LEFT */}
   <div
     id="mobile-menu"
-    class="fixed top-0 left-0 bottom-0 w-full bg-[#000000] [.theme-light_&]:bg-[#ffffff] z-[1080] -translate-x-full invisible transition-all duration-300 ease-in-out md:hidden shadow-2xl"
+    class="fixed left-0 w-full bg-background-primary z-[999] translate-x-[-100%] invisible transition-transform duration-300 ease-in-out md:hidden flex flex-col"
     aria-hidden="true"
   >
-    <div class="flex flex-col h-full p-8 pt-24 max-w-[400px] mx-auto">
-      {/* Mobile Navigation Links */}
-      <nav class="flex flex-col space-y-1">
-        <a
-          href="/writing"
-          class="flex items-center justify-between py-6 border-b border-border/50 text-2xl font-medium text-text-primary group mobile-menu-link"
-        >
+    <div class="flex-1 overflow-y-auto px-6 py-8">
+      <nav class="flex flex-col space-y-2 max-w-[500px] mx-auto">
+        <a href="/writing" class="flex items-center justify-between py-6 border-b border-border/50 text-2xl font-medium text-text-primary mobile-menu-link">
           <span>Writing</span>
-          <svg class="w-6 h-6 text-text-muted group-hover:text-accent-primary transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
-        <a
-          href="/about"
-          class="flex items-center justify-between py-6 border-b border-border/50 text-2xl font-medium text-text-primary group mobile-menu-link"
-        >
+        <a href="/about" class="flex items-center justify-between py-6 border-b border-border/50 text-2xl font-medium text-text-primary mobile-menu-link">
           <span>About</span>
-          <svg class="w-6 h-6 text-text-muted group-hover:text-accent-primary transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
       </nav>
 
-      <div class="mt-auto mb-8">
-         <h2 class="text-[10px] font-bold uppercase tracking-widest text-text-tertiary mb-6">
-          Preferences & Search
-        </h2>
-        
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-4 bg-background-secondary rounded-2xl border border-border/50">
-            <span class="text-sm font-medium text-text-secondary">Theme</span>
-             <button
-              id="theme-toggle-mobile"
-              type="button"
-              class="theme-toggle group relative inline-flex h-8 w-16 items-center rounded-full border-2 border-border bg-background-primary transition-all focus:outline-none"
-              aria-label="Switch to light theme"
-              aria-pressed="false"
-            >
-              <span class="sr-only">Toggle theme</span>
-              <span
-                class="theme-toggle-thumb pointer-events-none absolute left-1 top-[2px] h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out z-10"
-              ></span>
-              <div class="absolute inset-0 z-20 pointer-events-none flex items-center">
-                <div class="sun-icon-wrapper absolute left-[9px] transition-colors duration-300">
-                  <SunIcon size="0.875rem" />
-                </div>
-                <div class="moon-icon-wrapper absolute right-[9px] transition-colors duration-300">
-                  <MoonIcon size="0.875rem" />
-                </div>
-              </div>
-            </button>
+      <div class="mt-12 max-w-[500px] mx-auto space-y-6">
+        <button type="button" class="flex items-center justify-between p-5 bg-background-secondary rounded-2xl border border-border/50 w-full text-text-secondary hover:text-accent-primary transition-colors">
+          <div class="flex items-center gap-4">
+            <SearchIcon size="1.5rem" />
+            <span class="text-lg font-medium">Search site</span>
           </div>
+        </button>
 
+        <div class="flex items-center justify-between p-5 bg-background-secondary rounded-2xl border border-border/50">
+          <span class="text-lg font-medium text-text-secondary">Appearance</span>
           <button
+            id="theme-toggle-mobile"
             type="button"
-            class="flex items-center justify-between p-4 bg-background-secondary rounded-2xl border border-border/50 text-text-secondary hover:text-accent-primary transition-colors w-full group"
-            aria-label="Search site"
+            class="theme-toggle group relative inline-flex h-8 w-16 items-center rounded-full border-2 border-border bg-background-primary focus:outline-none"
           >
-            <div class="flex items-center gap-3">
-              <SearchIcon size="1.25rem" />
-              <span class="text-base font-medium">Search</span>
+            <div class="absolute inset-0 z-20 pointer-events-none flex items-center">
+              <span class="absolute left-[9px] top-1/2 -translate-y-1/2 text-text-muted/70">
+                <SunIcon size="0.85rem" />
+              </span>
+              <span class="absolute right-[9px] top-1/2 -translate-y-1/2 text-text-muted/70">
+                <MoonIcon size="0.85rem" />
+              </span>
             </div>
+            <span class="theme-toggle-thumb absolute left-1 top-[2px] h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out z-10"></span>
           </button>
         </div>
       </div>
@@ -197,69 +143,32 @@ const { class: className, animateTitle = false } = Astro.props;
     const updateThemeToggleState = (buttons, isLight, shouldAnimate = true) => {
       buttons.forEach((btn) => {
         btn.setAttribute('aria-pressed', String(isLight));
-        btn.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
-        
         const thumb = btn.querySelector('.theme-toggle-thumb');
-        const sunWrapper = btn.querySelector('.sun-icon-wrapper');
-        const moonWrapper = btn.querySelector('.moon-icon-wrapper');
 
         if (thumb) {
-          if (!shouldAnimate) {
-            thumb.style.transition = 'none';
-          }
-
-          // Simple translateX logic
-          thumb.style.transform = isLight ? 'translateX(0)' : 'translateX(1.75rem)';
-          
+          if (!shouldAnimate) thumb.style.transition = 'none';
+          const xOffset = isLight ? '0' : 'calc(2rem - 2px)';
+          thumb.style.transform = `translateX(${xOffset})`;
           thumb.style.backgroundColor = isLight ? 'var(--color-border)' : '#ffffff';
-          thumb.style.border = 'none';
-
-          if (!shouldAnimate) {
-            void thumb.offsetWidth;
-            thumb.style.transition = '';
-          }
+          if (!shouldAnimate) { void thumb.offsetWidth; thumb.style.transition = ''; }
         }
 
-        if (sunWrapper && moonWrapper) {
-          sunWrapper.style.color = isLight ? '#ffffff' : 'var(--color-text-muted)';
-          moonWrapper.style.color = isLight ? 'var(--color-text-muted)' : '#000000';
-        }
       });
     };
 
     const getStoredThemePreference = () => {
-      try {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'light') return true;
-        if (stored === 'dark') return false;
-      } catch (_) {
-        return document.documentElement.classList.contains('theme-light');
-      }
-
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored === 'light';
       return window.matchMedia('(prefers-color-scheme: light)').matches;
     };
 
-    const applyThemeClass = (isLight, options = {}) => {
-      const root = document.documentElement;
-      root.classList.toggle('theme-light', isLight);
-    };
+    const applyThemeClass = (isLight) => document.documentElement.classList.toggle('theme-light', isLight);
 
     const setTheme = (buttons, isLight, options = {}) => {
       const { persist = true, animate = true } = options;
-      applyThemeClass(isLight, { animate });
-      if (persist) {
-        try {
-          localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        } catch (_) {
-          /* ignore */
-        }
-      }
+      applyThemeClass(isLight);
+      if (persist) localStorage.setItem('theme', isLight ? 'light' : 'dark');
       updateThemeToggleState(buttons, isLight, animate);
-    };
-
-    const hydrateThemePreference = (buttons) => {
-      const isLight = getStoredThemePreference();
-      setTheme(buttons, isLight, { persist: false, animate: false });
     };
 
     const initHeaderInteractions = () => {
@@ -268,73 +177,86 @@ const { class: className, animateTitle = false } = Astro.props;
       header.dataset.interactionsInitialized = 'true';
 
       const menuButton = header.querySelector('#mobile-menu-button');
-      const mobileMenu = header.querySelector('#mobile-menu');
-      const overlay = header.querySelector('#mobile-menu-overlay');
+      const mobileMenu = document.getElementById('mobile-menu');
 
-      if (menuButton && mobileMenu && overlay) {
+      if (mobileMenu && mobileMenu.dataset.portalized !== 'true') {
+        // Keep fixed positioning anchored to the viewport even when the header is sticky.
+        mobileMenu.dataset.portalized = 'true';
+        document.body.appendChild(mobileMenu);
+      }
+
+      if (mobileMenu) {
+        // Calculate real header height
+        const headerHeight = header.offsetHeight || 64;
+        mobileMenu.style.top = `${headerHeight}px`;
+        mobileMenu.style.height = `calc(100vh - ${headerHeight}px)`;
+      }
+
+      if (menuButton && mobileMenu) {
+        let lockedScrollY = 0;
+        const lockScroll = () => {
+          lockedScrollY = window.scrollY || window.pageYOffset || 0;
+          document.documentElement.style.overflow = 'hidden';
+          document.body.style.position = 'fixed';
+          document.body.style.top = `-${lockedScrollY}px`;
+          document.body.style.width = '100%';
+        };
+        const unlockScroll = () => {
+          document.documentElement.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.width = '';
+          window.scrollTo(0, lockedScrollY);
+        };
+
         const toggleMenu = (open) => {
+          const logoImg = header.querySelector('#site-logo-img');
           menuButton.setAttribute('aria-expanded', String(open));
-          mobileMenu.setAttribute('aria-hidden', String(!open));
-          overlay.setAttribute('aria-hidden', String(!open));
           
+          if (logoImg) {
+            logoImg.style.transform = open ? 'rotate(360deg)' : 'rotate(0deg)';
+          }
+
           if (open) {
-            mobileMenu.classList.remove('-translate-x-full', 'invisible');
-            overlay.classList.remove('opacity-0', 'pointer-events-none', 'invisible');
-            document.body.style.overflow = 'hidden';
-          } else {
-            mobileMenu.classList.add('-translate-x-full');
-            overlay.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = '';
+            // Recalculate position on open
+            const headerRect = header.getBoundingClientRect();
+            mobileMenu.style.top = `${headerRect.bottom}px`;
+            mobileMenu.style.height = `calc(100vh - ${headerRect.bottom}px)`;
             
+            header.classList.add('is-menu-open');
+            mobileMenu.classList.remove('translate-x-[-100%]', 'invisible');
+            mobileMenu.classList.add('translate-x-0');
+            lockScroll();
+          } else {
+            header.classList.remove('is-menu-open');
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-[-100%]');
+            unlockScroll();
             setTimeout(() => {
-              if (menuButton.getAttribute('aria-expanded') === 'false') {
-                mobileMenu.classList.add('invisible');
-                overlay.classList.add('invisible');
-              }
+              if (menuButton.getAttribute('aria-expanded') === 'false') mobileMenu.classList.add('invisible');
             }, 300);
           }
 
           const path = menuButton.querySelector('#menu-icon-path');
           if (path) {
-            path.setAttribute('d', open 
-              ? 'M6 18L18 6M6 6l12 12' 
-              : 'M4 6h16M4 12h16M4 18h16');
+            path.setAttribute('d', open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16');
           }
         };
 
-        menuButton.addEventListener('click', () => {
-          const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-          toggleMenu(!isExpanded);
-        });
-
-        overlay.addEventListener('click', () => toggleMenu(false));
-
-        mobileMenu.querySelectorAll('.mobile-menu-link').forEach((link) => {
-          link.addEventListener('click', () => toggleMenu(false));
-        });
+        menuButton.addEventListener('click', () => toggleMenu(menuButton.getAttribute('aria-expanded') === 'false'));
+        mobileMenu.querySelectorAll('.mobile-menu-link').forEach(link => link.addEventListener('click', () => toggleMenu(false)));
       }
 
-      const themeToggleButtons = header.querySelectorAll('.theme-toggle');
-
+      const themeToggleButtons = document.querySelectorAll('.theme-toggle');
       if (themeToggleButtons.length > 0) {
-        hydrateThemePreference(themeToggleButtons);
-        themeToggleButtons.forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const nextIsLight = !document.documentElement.classList.contains('theme-light');
-            setTheme(themeToggleButtons, nextIsLight);
-          });
-        });
+        setTheme(themeToggleButtons, getStoredThemePreference(), { persist: false, animate: false });
+        themeToggleButtons.forEach(btn => btn.addEventListener('click', () => setTheme(themeToggleButtons, !document.documentElement.classList.contains('theme-light'))));
       }
     };
 
     const scheduleInit = () => window.requestAnimationFrame(initHeaderInteractions);
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', scheduleInit, { once: true });
-    } else {
-      scheduleInit();
-    }
-
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleInit, { once: true });
+    else scheduleInit();
     document.addEventListener('astro:page-load', scheduleInit);
   })();
 </script>

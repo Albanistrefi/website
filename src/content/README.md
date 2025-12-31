@@ -81,15 +81,6 @@ const posts = await getCollection('writing');
 const sortedPosts = sortPostsByDate(posts);
 ```
 
-### Get posts by year
-```typescript
-import { getCollection } from 'astro:content';
-import { getPostsByYear } from '@/utils';
-
-const allPosts = await getCollection('writing');
-const posts2024 = getPostsByYear(allPosts, 2024);
-```
-
 ## Using MDX Components
 
 Import and use MDX components in your posts:
@@ -119,28 +110,14 @@ import { Callout } from '@/components/mdx';
 </Callout>
 ```
 
-### Image
-```mdx
-import { Image } from '@/components/mdx';
-
-<Image
-  src="/images/my-photo.jpg"
-  alt="Description of image"
-  caption="This is a photo caption"
-  lightbox={true}
-/>
-```
-
 ## Utility Functions
 
 ### Date Formatting
 ```typescript
-import { formatDate, formatDateShort, getRelativeTime } from '@/utils';
+import { formatDate } from '@/utils';
 
 const date = new Date(post.data.publishDate);
 formatDate(date);           // "January 15, 2025"
-formatDateShort(date);      // "Jan 15, 2025"
-getRelativeTime(date);      // "2 days ago"
 ```
 
 ### Reading Time
@@ -213,7 +190,6 @@ const post: Post = {
 4. **Required fields** - Always include title, description, publishDate, and tags
 5. **Tag consistency** - Use consistent tag names across posts
 6. **Featured posts** - Mark important posts with `featured: true`
-7. **Image optimization** - Use the Image component for all images
 
 ## Environment-Based Filtering
 

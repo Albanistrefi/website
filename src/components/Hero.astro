@@ -1,7 +1,6 @@
 ---
-import { Button } from './Button';
 import { Link } from './Link';
-import { GitHubIcon, LinkedInIcon, EmailIcon } from './Icons';
+import { GitHubIcon, LinkedInIcon, EmailIcon, XIcon } from './Icons';
 import { Image } from 'astro:assets';
 
 interface Props {
@@ -12,6 +11,7 @@ interface Props {
     github?: string;
     linkedin?: string;
     email?: string;
+    x?: string;
   };
   showCTA?: boolean;
   class?: string;
@@ -22,9 +22,10 @@ const {
   greeting = "Hello, I'm a Developer",
   bio = "I'm a Product Manager that loves everything web development and AI",
   socialLinks = {
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    email: "mailto:example@email.com"
+    github: "https://github.com/albanistrefi",
+    linkedin: "https://www.linkedin.com/in/alban-istrefi/",
+    email: "mailto:albanistrefi.b@gmail.com",
+    x: "https://x.com/albaistx"
   },
   showCTA = true,
   class: className
@@ -71,22 +72,33 @@ const {
       </div>
 
       {/* Social Links and CTA */}
-      <div class="flex items-center justify-center md:justify-start gap-[0.875rem] md:gap-4">
-        {socialLinks.github && (
-          <Link href={socialLinks.github} external showExternalIcon={false} className="inline-flex items-center">
-            <GitHubIcon variant="social" size="1.25rem" aria-label="GitHub Profile" />
-          </Link>
-        )}
-        {socialLinks.linkedin && (
-          <Link href={socialLinks.linkedin} external showExternalIcon={false} className="inline-flex items-center">
-            <LinkedInIcon variant="social" size="1.25rem" aria-label="LinkedIn Profile" />
-          </Link>
-        )}
-        {socialLinks.email && (
-          <Link href={socialLinks.email} showExternalIcon={false} className="inline-flex items-center">
-            <EmailIcon variant="social" size="1.25rem" aria-label="Email Contact" />
-          </Link>
-        )}
+      <div class="flex w-full items-center justify-start">
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium uppercase tracking-wide text-text-tertiary">Connect</span>
+          <span class="h-px w-6 bg-border"></span>
+          <div class="flex items-center gap-4">
+            {socialLinks.github && (
+              <Link href={socialLinks.github} external showExternalIcon={false} className="text-text-secondary hover:text-accent-primary transition-colors inline-flex items-center">
+                <GitHubIcon size="1.5rem" aria-label="GitHub Profile" />
+              </Link>
+            )}
+            {socialLinks.linkedin && (
+              <Link href={socialLinks.linkedin} external showExternalIcon={false} className="text-text-secondary hover:text-accent-primary transition-colors inline-flex items-center">
+                <LinkedInIcon size="1.5rem" aria-label="LinkedIn Profile" />
+              </Link>
+            )}
+            {socialLinks.x && (
+              <Link href={socialLinks.x} external showExternalIcon={false} className="text-text-secondary hover:text-accent-primary transition-colors inline-flex items-center">
+                <XIcon size="1.5rem" aria-label="X Profile" />
+              </Link>
+            )}
+            {socialLinks.email && (
+              <Link href={socialLinks.email} showExternalIcon={false} className="text-text-secondary hover:text-accent-primary transition-colors inline-flex items-center">
+                <EmailIcon size="1.5rem" aria-label="Email Contact" />
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 ---
-import { GitHubIcon, LinkedInIcon, EmailIcon } from './Icons';
+import { GitHubIcon, LinkedInIcon, EmailIcon, XIcon } from './Icons';
 
 interface Props {
   class?: string;
@@ -30,7 +30,7 @@ const currentYear = new Date().getFullYear();
         {/* Social Links */}
         <div class="flex items-center gap-4 md:gap-6 order-1 md:order-2">
           <a
-            href="https://github.com"
+            href="https://github.com/albanistrefi"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
@@ -39,7 +39,7 @@ const currentYear = new Date().getFullYear();
             <GitHubIcon size="1.125rem" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/alban-istrefi/"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
@@ -48,7 +48,16 @@ const currentYear = new Date().getFullYear();
             <LinkedInIcon size="1.125rem" />
           </a>
           <a
-            href="mailto:example@email.com"
+            href="https://x.com/albaistx"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
+            aria-label="Visit X profile"
+          >
+            <XIcon size="1.125rem" />
+          </a>
+          <a
+            href="mailto:albanistrefi.b@gmail.com"
             class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-primary rounded"
             aria-label="Send email"
           >

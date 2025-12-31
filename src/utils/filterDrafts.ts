@@ -20,34 +20,3 @@ export function filterDrafts(
   // In production, filter out drafts
   return posts.filter((post) => !post.data.draft);
 }
-
-/**
- * Filter to only get published posts (excludes drafts)
- * @param posts - Array of post entries
- * @returns Filtered array of published posts
- */
-export function getPublishedPosts(
-  posts: CollectionEntry<'writing'>[]
-): CollectionEntry<'writing'>[] {
-  return posts.filter((post) => !post.data.draft);
-}
-
-/**
- * Filter to only get draft posts
- * @param posts - Array of post entries
- * @returns Filtered array of draft posts
- */
-export function getDraftPosts(
-  posts: CollectionEntry<'writing'>[]
-): CollectionEntry<'writing'>[] {
-  return posts.filter((post) => post.data.draft);
-}
-
-/**
- * Check if a post is published
- * @param post - Post entry
- * @returns True if post is published (not a draft)
- */
-export function isPublished(post: CollectionEntry<'writing'>): boolean {
-  return !post.data.draft;
-}

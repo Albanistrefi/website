@@ -1,7 +1,6 @@
 ---
 import Layout from './Layout.astro';
 import { Header, Footer } from '@/components';
-import { CalendarIcon, ClockIcon } from '@/components/Icons';
 import { formatDate, getReadingTimeMinutes } from '@/utils';
 import type { CollectionEntry } from 'astro:content';
 
@@ -14,7 +13,6 @@ const { post, headings = [] } = Astro.props;
 const { title, description, publishDate, tags } = post.data;
 const slug = post.slug;
 const formattedDate = formatDate(publishDate);
-const year = publishDate.getFullYear();
 const minutesRead = getReadingTimeMinutes(post.body);
 const transitionId = `post-heading-${slug}`;
 ---

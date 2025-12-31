@@ -38,7 +38,12 @@ export const Link: React.FC<LinkProps> = ({
   const getVariantClasses = (variant: 'default' | 'navigation' | 'unstyled') => {
     switch (variant) {
       case 'navigation':
-        return 'text-text-primary transition-colors duration-[0.2s] ease-[ease] hover:text-accent-primary';
+        return [
+          'relative text-text-primary transition-all duration-[0.2s] ease-[ease] hover:text-accent-primary',
+          'after:content-[\'\'] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full',
+          'after:bg-accent-primary after:origin-left after:scale-x-0 after:transition-transform after:duration-[0.2s] after:ease-[ease]',
+          'hover:after:scale-x-100'
+        ].join(' ');
       case 'unstyled':
         return 'transition-colors duration-[0.2s] ease-[ease]';
       case 'default':
