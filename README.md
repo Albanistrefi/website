@@ -32,4 +32,4 @@ All commands are run from the project root:
 Set `SITE_URL` to your production domain (defaults to `https://www.albanistrefi.me`).
 
 ## License
-All rights reserved unless stated otherwise.
+MIT — see `LICENSE`.
