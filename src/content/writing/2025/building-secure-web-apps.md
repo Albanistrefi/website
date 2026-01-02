@@ -24,8 +24,8 @@ In June, shortly after the release of Sonnet 4, we decided to roll out Cursor as
 
 Then came the Slack message the day after, along the lines of: 
 
-“I’m really impressed by Cursor’s ability to help me solve a problem I’ve been working on.”
-That was the moment. I knew we had crossed a line. There was no going back.
+<blockquote>“I’m really impressed by Cursor’s ability to help me solve a problem I’ve been working on.”
+That was the moment. I knew we had crossed a line. There was no going back.</blockquote>
 
 Over the summer, as TUIs started gaining more attention, I spent an unreasonable amount of time testing pretty much everything available; Claude Code, Gemini CLI, and RovoDev.
 

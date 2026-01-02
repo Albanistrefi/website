@@ -192,6 +192,20 @@ body {
   background-color: var(--color-tag-bg);
 }
 
+/* Blockquotes */
+blockquote {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  border-left: 4px solid var(--color-text-muted);
+  color: var(--color-text-primary);
+  font-style: italic;
+}
+
+blockquote p {
+  margin: 0;
+}
+
 /* Light Theme Overrides (role-based tokens remapped) */
 .theme-light {
   --color-background-primary: var(--platinum);
@@ -446,4 +460,3 @@ body {
     animation-duration: 0.01s;
   }
 }
-
