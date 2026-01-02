@@ -15,7 +15,7 @@ const { class: className, animateTitle = false } = Astro.props;
   {/* Header Glass Background */}
   <div class="absolute inset-0 bg-background-primary/80 backdrop-blur-md"></div>
 
-  <div class="relative max-w-[900px] mx-auto py-4 md:py-6 px-4 md:px-0">
+  <div class="relative max-w-[900px] mx-auto py-4 lg:py-6 px-4 lg:px-0">
     <nav class="flex items-center justify-between" role="navigation" aria-label="Main navigation">
       {/* Logo/Site Title */}
       <div class="flex-shrink-0">
@@ -43,15 +43,15 @@ const { class: className, animateTitle = false } = Astro.props;
       </div>
 
       {/* Desktop Navigation */}
-      <div class="hidden md:flex items-center justify-end">
+      <div class="hidden lg:flex items-center justify-end">
         <div class="flex items-center space-x-6">
           <Link href="/writing" variant="navigation" class="text-[0.9375rem]">Writing</Link>
           <Link href="/about" variant="navigation" class="text-[0.9375rem]">About</Link>
         </div>
         <div class="flex items-center justify-center space-x-4 pl-4 ml-4 border-l border-border">
-          <button type="button" class="text-text-primary hover:text-accent-primary transition-colors" aria-label="Search site">
+          <a href="/search" class="text-text-primary hover:text-accent-primary transition-colors inline-flex h-8 w-8 items-center justify-center" aria-label="Search site" title="Search">
             <SearchIcon size="1.25rem" />
-          </button>
+          </a>
           <button
             id="theme-toggle-desktop"
             type="button"
@@ -74,7 +74,7 @@ const { class: className, animateTitle = false } = Astro.props;
       {/* Mobile Menu Toggle */}
       <button
         id="mobile-menu-button"
-        class="md:hidden relative z-[1100] p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors focus:outline-none"
+        class="lg:hidden relative z-[1100] p-2 -mr-2 text-text-primary hover:text-accent-primary transition-colors focus:outline-none"
         aria-label="Toggle menu"
         aria-expanded="false"
       >
@@ -88,7 +88,7 @@ const { class: className, animateTitle = false } = Astro.props;
   {/* Mobile Menu Content - Starts directly below header, slides from LEFT */}
   <div
     id="mobile-menu"
-    class="fixed left-0 w-full bg-background-primary z-[999] translate-x-[-100%] invisible transition-transform duration-300 ease-in-out md:hidden flex flex-col"
+    class="fixed left-0 w-full bg-background-primary z-[999] translate-x-[-100%] invisible transition-transform duration-300 ease-in-out lg:hidden flex flex-col"
     aria-hidden="true"
   >
     <div class="flex-1 overflow-y-auto px-6 py-8">
@@ -108,12 +108,12 @@ const { class: className, animateTitle = false } = Astro.props;
       </nav>
 
       <div class="mt-12 max-w-[500px] mx-auto space-y-6">
-        <button type="button" class="flex items-center justify-between p-5 bg-background-secondary rounded-2xl border border-border/50 w-full text-text-secondary hover:text-accent-primary transition-colors">
+        <a href="/search" class="mobile-menu-link flex items-center justify-between p-5 bg-background-secondary rounded-2xl border border-border/50 w-full text-text-secondary hover:text-accent-primary transition-colors" aria-label="Search site">
           <div class="flex items-center gap-4">
             <SearchIcon size="1.5rem" />
             <span class="text-lg font-medium">Search site</span>
           </div>
-        </button>
+        </a>
 
         <div class="flex items-center justify-between p-5 bg-background-secondary rounded-2xl border border-border/50">
           <span class="text-lg font-medium text-text-secondary">Appearance</span>

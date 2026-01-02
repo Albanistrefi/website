@@ -1,12 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
+import { filterDrafts } from '@/utils';
 import PostLayout from '@/layouts/PostLayout.astro';
 import CodeBlock from '@/components/mdx/CodeBlock.astro';
 import Callout from '@/components/mdx/Callout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writing');
-  return posts.map((post) => ({
+  const publishedPosts = filterDrafts(posts);
+  return publishedPosts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
   }));

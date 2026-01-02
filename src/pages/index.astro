@@ -59,10 +59,10 @@ const recentPosts = posts.map((post) => {
 
         <ul class="flex flex-col">
           {recentPosts.map((post) => (
-            <li class="group grid grid-cols-1 md:grid-cols-[2fr_3fr] md:gap-8 border-t border-border py-8 first:border-t-0">
+            <li class="group grid grid-cols-1 lg:grid-cols-[2fr_3fr] lg:gap-8 border-t border-border py-8 first:border-t-0">
               
               {/* Left: Date */}
-              <div class="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-1 text-sm font-mono text-text-tertiary mb-4 md:mb-0 md:pr-8 h-full">
+              <div class="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-1 text-sm font-mono text-text-tertiary mb-4 lg:mb-0 lg:pr-8 h-full">
                 <span class="font-medium text-text-secondary">{post.month}</span>
                 <span class="text-text-muted">{post.year}</span>
               </div>

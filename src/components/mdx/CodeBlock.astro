@@ -152,11 +152,13 @@ const { code, lang = 'text', title, showLineNumbers = true } = Astro.props;
 </style>
 
 <script>
-  // Copy to clipboard functionality
-  document.addEventListener('DOMContentLoaded', () => {
+  const bindCopyButtons = () => {
     const copyButtons = document.querySelectorAll('.copy-button');
 
     copyButtons.forEach((button) => {
+      if (button.dataset.copyBound === 'true') return;
+      button.dataset.copyBound = 'true';
+
       button.addEventListener('click', async () => {
         const code = button.getAttribute('data-code');
         if (!code) return;
@@ -172,5 +174,8 @@ const { code, lang = 'text', title, showLineNumbers = true } = Astro.props;
         }
       });
     });
-  });
+  };
+
+  document.addEventListener('DOMContentLoaded', bindCopyButtons);
+  document.addEventListener('astro:page-load', bindCopyButtons);
 </script>

@@ -4,15 +4,6 @@ import { Header, Footer, GitHubActivity } from '@/components';
 import { GitHubIcon, LinkedInIcon, EmailIcon, XIcon } from '@/components/Icons';
 import { Image } from 'astro:assets';
 import albanImage from '../assets/A_tomahawk.jpg';
-
-let activityData = [];
-try {
-  const res = await fetch('https://github-contributions-api.jogruber.de/v4/Albanistrefi');
-  const data = await res.json();
-  activityData = data.contributions || [];
-} catch (e) {
-  console.error("Failed to fetch GitHub activity:", e);
-}
 ---
 
 <Layout
@@ -23,10 +14,10 @@ try {
 
   <main class="page-shell mx-auto max-w-[900px]">
     <section class="mt-12 mb-16">
-      <div class="grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-12 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-12 items-start">
         {/* Left Column: Image */}
         <div class="relative order-1">
-          <div class="aspect-square md:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-background-secondary border border-border">
+          <div class="aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-background-secondary border border-border">
              <Image 
               src={albanImage} 
               alt="Alban Istrefi" 
@@ -95,13 +86,7 @@ try {
         GitHub Activity
       </h2>
       <div class="bg-background-secondary border border-border p-6 rounded-2xl overflow-hidden flex justify-center">
-        {activityData.length > 0 ? (
-          <GitHubActivity client:load data={activityData} />
-        ) : (
-          <div class="text-text-muted text-sm py-4">
-            Unable to load activity graph. <a href="https://github.com/albanistrefi" class="text-accent-primary underline">View on GitHub</a>
-          </div>
-        )}
+        <GitHubActivity client:load username="albanistrefi" />
       </div>
       <p class="mt-4 text-text-secondary text-sm">
         Follow me on <a href="https://github.com/albanistrefi" target="_blank" rel="noopener noreferrer" class="text-accent-primary hover:underline">GitHub</a> to see what I'm currently building.

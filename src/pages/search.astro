@@ -1,0 +1,161 @@
+---
+import "@pagefind/default-ui/css/ui.css";
+import Layout from '@/layouts/Layout.astro';
+import { Header, Footer } from '@/components';
+---
+
+<Layout
+  title="Search - Alban Istrefi"
+  description="Search posts and pages from Alban Istrefi."
+>
+  <Header />
+
+  <main class="page-shell mx-auto max-w-[900px]">
+    <div class="mb-12 mt-8 space-y-2">
+      <h1 class="text-[1.5rem] leading-[1.3] -tracking-[0.02em] lg:text-[2rem] lg:leading-[1.2] font-semibold">
+        Search
+      </h1>
+      <p class="text-text-secondary">
+        Search across writing, pages, and topics.
+      </p>
+    </div>
+
+    <div id="pagefind-search"></div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  (() => {
+    const initSearch = () => {
+      const pagefindContainer = document.querySelector('#pagefind-search');
+      if (!pagefindContainer) return;
+      if (pagefindContainer.querySelector('form')) return;
+      if (pagefindContainer.dataset.pagefindInitialized === 'true') return;
+      pagefindContainer.dataset.pagefindInitialized = 'true';
+
+      const params = new URLSearchParams(window.location.search);
+      const onIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+
+      onIdle(async () => {
+        // @ts-expect-error - Missing types for @pagefind/default-ui package.
+        const { PagefindUI } = await import('@pagefind/default-ui');
+
+        if (import.meta.env.DEV) {
+          pagefindContainer.innerHTML = `
+            <div class="bg-background-secondary/70 rounded-xl p-4 space-y-3 mb-6 border border-border">
+              <p class="text-text-secondary"><strong>DEV mode:</strong> run a build once to generate the search index.</p>
+              <code class="block bg-black/80 text-white px-3 py-2 rounded">npm run build</code>
+            </div>
+          `;
+        }
+
+        const search = new PagefindUI({
+          element: '#pagefind-search',
+          showSubResults: true,
+          showImages: false,
+          processTerm: (term) => {
+            if (term) params.set('q', term);
+            else params.delete('q');
+            history.replaceState(history.state, '', params.toString() ? `?${params.toString()}` : window.location.pathname);
+            return term;
+          }
+        });
+
+        const query = params.get('q');
+        if (query) search.triggerSearch(query);
+
+        const searchInput = document.querySelector('.pagefind-ui__search-input');
+        const clearButton = document.querySelector('.pagefind-ui__search-clear');
+
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.placeholder = "Search posts, e.g. 'AI workflows'";
+          searchInput.addEventListener('input', (event) => {
+            if (event.target?.value?.trim?.() === '') {
+              history.replaceState(history.state, '', window.location.pathname);
+            }
+          });
+        }
+
+        clearButton?.addEventListener('click', () => {
+          history.replaceState(history.state, '', window.location.pathname);
+        });
+      });
+    };
+
+    const scheduleInit = () => window.requestAnimationFrame(initSearch);
+    document.addEventListener('astro:page-load', scheduleInit);
+    scheduleInit();
+  })();
+</script>
+
+<style is:global>
+  #pagefind-search {
+    --pagefind-ui-font: var(--font-family-body);
+    --pagefind-ui-text: var(--color-text-primary);
+    --pagefind-ui-background: var(--color-background-primary);
+    --pagefind-ui-border: var(--color-border);
+    --pagefind-ui-primary: var(--color-accent-primary);
+    --pagefind-ui-tag: var(--color-background-secondary);
+    --pagefind-ui-border-radius: 0.75rem;
+    --pagefind-ui-border-width: 1px;
+  }
+
+  #pagefind-search form::before {
+    background-color: var(--color-text-primary);
+  }
+
+  #pagefind-search input {
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  #pagefind-search input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  #pagefind-search input:focus-visible {
+    outline: 2px dashed var(--color-accent-primary);
+    outline-offset: 2px;
+  }
+
+  #pagefind-search .pagefind-ui__result {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  #pagefind-search .pagefind-ui__result:last-of-type {
+    border-bottom: 0;
+  }
+
+  #pagefind-search .pagefind-ui__search-clear {
+    position: absolute;
+    top: calc(2px * var(--pagefind-ui-scale));
+    right: calc(2px * var(--pagefind-ui-scale));
+    height: calc(60px * var(--pagefind-ui-scale));
+    padding: 0 calc(20px * var(--pagefind-ui-scale));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  #pagefind-search .pagefind-ui__result-title a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  #pagefind-search .pagefind-ui__result-title a:hover {
+    color: var(--color-accent-primary);
+  }
+
+  #pagefind-search .pagefind-ui__search-clear:focus-visible,
+  #pagefind-search .pagefind-ui__result-title a:focus-visible {
+    outline: 2px dashed var(--color-accent-primary);
+    outline-offset: 2px;
+    text-decoration: none;
+  }
+</style>

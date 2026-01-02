@@ -4,7 +4,6 @@ dist/
 
 # Node.js
 node_modules/
-package-lock.json
 
 # Testing
 coverage/
@@ -42,3 +41,6 @@ lerna-debug.log*
 # OS
 Thumbs.db
 Desktop.ini
+
+# Search index (dev only)
+public/pagefind

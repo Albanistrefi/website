@@ -6,8 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
+const site = process.env.SITE_URL || 'https://www.albanistrefi.me';
+
 export default defineConfig({
-  site: 'https://example.com',
+  site,
   integrations: [
     react(),
     mdx(),

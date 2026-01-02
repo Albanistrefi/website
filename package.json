@@ -4,18 +4,22 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "preview:build": "astro build && pagefind --site dist && astro preview",
+    "search:dev": "node scripts/dev-search-index.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.9",
     "@astrojs/react": "^4.4.1",
     "@astrojs/sitemap": "^3.6.0",
+    "@pagefind/default-ui": "^1.4.0",
     "@tailwindcss/vite": "^4.1.16",
     "astro": "^5.15.3",
     "date-fns": "^4.1.0",
     "gray-matter": "^4.0.3",
+    "pagefind": "^1.4.0",
     "react": "^19.2.0",
     "react-activity-calendar": "^3.0.5",
     "react-dom": "^19.2.0",
