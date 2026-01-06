@@ -1,0 +1,39 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Header, Footer } from '@/components';
+---
+
+<Layout
+  title="Page not found - Alban Istrefi"
+  description="The page you’re looking for doesn’t exist."
+>
+  <Header />
+
+  <main class="page-shell mx-auto max-w-[900px] py-16 lg:py-24">
+    <div class="space-y-6">
+      <p class="text-sm font-medium uppercase tracking-wide text-text-tertiary">404</p>
+      <h1 class="text-[2rem] lg:text-[2.75rem] leading-[1.2] font-semibold text-text-primary">
+        Page not found
+      </h1>
+      <p class="text-text-secondary max-w-[600px]">
+        The page you’re trying to reach doesn’t exist or has moved. Use one of the links below to get back on track.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center rounded-full border border-border bg-background-secondary px-4 py-2 text-sm font-medium text-text-primary hover:text-accent-primary transition-colors"
+        >
+          Go home
+        </a>
+        <a
+          href="/writing"
+          class="inline-flex items-center justify-center rounded-full border border-border bg-background-secondary px-4 py-2 text-sm font-medium text-text-primary hover:text-accent-primary transition-colors"
+        >
+          Browse writing
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
