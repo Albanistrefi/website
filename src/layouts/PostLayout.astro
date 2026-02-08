@@ -3,6 +3,7 @@ import Layout from './Layout.astro';
 import { Header, Footer } from '@/components';
 import { formatDate, getReadingTimeMinutes } from '@/utils';
 import type { CollectionEntry } from 'astro:content';
+import { Fragment } from 'astro/jsx-runtime';
 
 interface Props {
   post: CollectionEntry<'writing'>;
@@ -15,9 +16,41 @@ const slug = post.slug;
 const formattedDate = formatDate(publishDate);
 const minutesRead = getReadingTimeMinutes(post.body);
 const transitionId = `post-heading-${slug}`;
+const updatedDate = post.data.updatedDate ?? publishDate;
+const hasUpdatedDate = updatedDate.getTime() !== publishDate.getTime();
+const formattedUpdatedDate = formatDate(updatedDate);
+
+const site = Astro.site ?? new URL('https://www.albanistrefi.me');
+const postUrl = new URL(`/writing/${slug}`, site).toString();
+const imageUrl = post.data.image
+  ? new URL(post.data.image, site).toString()
+  : new URL('/og-image@2x.png', site).toString();
+const authorName = post.data.author ?? 'Alban Istrefi';
+
+const blogPostingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  url: postUrl,
+  inLanguage: 'en',
+  datePublished: publishDate.toISOString(),
+  dateModified: updatedDate.toISOString(),
+  mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+  author: { '@type': 'Person', name: authorName },
+  publisher: { '@type': 'Person', name: authorName },
+  image: imageUrl,
+  ...(tags && tags.length > 0 ? { keywords: tags.join(', ') } : {}),
+};
+
+const markdownUrl = new URL(`/writing/${slug}.md`, site).toString();
 ---
 
 <Layout title={`${title} - Alban Istrefi`} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
+    <link rel="alternate" type="text/markdown" href={markdownUrl} title={`${title} (Markdown)`} />
+  </Fragment>
   <Header />
 
   <main
@@ -48,7 +81,14 @@ const transitionId = `post-heading-${slug}`;
       <aside class="hidden lg:block">
         <div class="flex flex-col gap-6">
           <div class="flex flex-col gap-1 text-sm">
-            <span class="font-medium text-text-primary">{formattedDate}</span>
+            <span class="text-text-tertiary">Published</span>
+            <time datetime={publishDate.toISOString()} class="font-medium text-text-primary">{formattedDate}</time>
+            {hasUpdatedDate && (
+              <>
+                <span class="text-text-tertiary pt-2">Updated</span>
+                <time datetime={updatedDate.toISOString()} class="font-medium text-text-primary">{formattedUpdatedDate}</time>
+              </>
+            )}
             <span class="text-text-tertiary">{minutesRead} min read</span>
           </div>
 
@@ -65,7 +105,14 @@ const transitionId = `post-heading-${slug}`;
         
         {/* Mobile Metadata */}
         <div class="lg:hidden mb-6 flex flex-wrap items-center gap-3 text-sm text-text-tertiary">
-          <span>{formattedDate}</span>
+          <time datetime={publishDate.toISOString()}>{formattedDate}</time>
+          {hasUpdatedDate && (
+            <>
+              <span>•</span>
+              <span>Updated</span>
+              <time datetime={updatedDate.toISOString()}>{formattedUpdatedDate}</time>
+            </>
+          )}
           <span>•</span>
           <span>{minutesRead} min read</span>
         </div>
