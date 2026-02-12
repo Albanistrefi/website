@@ -271,6 +271,12 @@ const markdownUrl = new URL(`/writing/${slug}.md`, site).toString();
     height: auto;
   }
 
+  .prose > img:first-child,
+  .prose > p:first-child img,
+  .prose > figure:first-child img {
+    margin-top: 0;
+  }
+
   .prose hr {
     border: none;
     border-top: 1px solid var(--color-border);
