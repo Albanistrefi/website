@@ -7,15 +7,6 @@ import { filterDrafts, sortPostsByDate, groupPostsByYear, formatDate } from '@/u
 const allPosts = await getCollection('writing');
 const posts = sortPostsByDate(filterDrafts(allPosts));
 const postsByYear = groupPostsByYear(posts);
-const tagCounts = posts.reduce((acc, post) => {
-  for (const tag of post.data.tags ?? []) {
-    acc.set(tag, (acc.get(tag) ?? 0) + 1);
-  }
-  return acc;
-}, new Map<string, number>());
-const allTags = Array.from(tagCounts.keys()).sort((a, b) =>
-  a.localeCompare(b, undefined, { sensitivity: 'base' })
-);
 ---
 
 <Layout
@@ -31,38 +22,10 @@ const allTags = Array.from(tagCounts.keys()).sort((a, b) =>
       </h1>
     </div>
 
-    {allTags.length > 0 && (
-      <section class="mb-10" data-writing-filters>
-        <h2 class="text-sm font-medium uppercase tracking-wide text-text-tertiary mb-4">
-          Filter by tag
-        </h2>
-        <div class="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            class="rounded-full border px-3 py-1.5 text-sm transition-colors duration-200 border-accent-primary text-accent-primary"
-            data-tag-filter="all"
-            aria-pressed="true"
-          >
-            All <span class="text-text-tertiary">({posts.length})</span>
-          </button>
-          {allTags.map((tag) => (
-            <button
-              type="button"
-              class="rounded-full border px-3 py-1.5 text-sm transition-colors duration-200 border-border text-text-secondary hover:border-accent-primary hover:text-accent-primary"
-              data-tag-filter={tag.toLowerCase()}
-              aria-pressed="false"
-            >
-              #{tag} <span class="text-text-tertiary">({tagCounts.get(tag)})</span>
-            </button>
-          ))}
-        </div>
-      </section>
-    )}
-
     {Object.entries(postsByYear)
       .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
       .map(([year, yearPosts]) => (
-        <section class="mb-16" id={`posts-${year}`} data-year-section>
+        <section class="mb-16" id={`posts-${year}`}>
           <h2 class="text-sm font-medium uppercase tracking-wide text-text-tertiary mb-8 border-b border-border pb-2">
             {year}
           </h2>
@@ -75,14 +38,9 @@ const allTags = Array.from(tagCounts.keys()).sort((a, b) =>
               const yearValue = publishDate.getFullYear();
               const tags = post.data.tags ?? [];
               const transitionId = `post-heading-${post.slug}`;
-              const normalizedTags = tags.map((tag) => tag.toLowerCase()).join('||');
 
               return (
-                <li
-                  class="group grid grid-cols-1 lg:grid-cols-[2fr_3fr] lg:gap-8 border-t border-border py-8 first:border-t-0"
-                  data-post-item
-                  data-tags={normalizedTags}
-                >
+                <li class="group grid grid-cols-1 lg:grid-cols-[2fr_3fr] lg:gap-8 border-t border-border py-8 first:border-t-0">
                   
                   {/* Left: Date */}
                   <div class="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-1 text-sm font-mono text-text-tertiary mb-4 lg:mb-0 lg:pr-8 h-full">
@@ -116,10 +74,6 @@ const allTags = Array.from(tagCounts.keys()).sort((a, b) =>
         </section>
       ))}
 
-    <div class="hidden text-center py-12 text-text-secondary" data-filter-empty>
-      No posts match this tag yet.
-    </div>
-
     {posts.length === 0 && (
       <div class="text-center py-12 text-text-secondary">
         No posts yet. Check back soon!
@@ -129,79 +83,3 @@ const allTags = Array.from(tagCounts.keys()).sort((a, b) =>
 
   <Footer />
 </Layout>
-
-<script is:inline>
-  (() => {
-    const ACTIVE_CLASSES = ['border-accent-primary', 'text-accent-primary'];
-    const INACTIVE_CLASSES = ['border-border', 'text-text-secondary'];
-
-    const applyFilter = (root, selectedTag) => {
-      const posts = Array.from(document.querySelectorAll('[data-post-item]'));
-      const sections = Array.from(document.querySelectorAll('[data-year-section]'));
-      const emptyState = document.querySelector('[data-filter-empty]');
-      let visiblePosts = 0;
-
-      posts.forEach((post) => {
-        const tags = (post.getAttribute('data-tags') || '')
-          .split('||')
-          .filter(Boolean);
-        const isVisible = selectedTag === 'all' || tags.includes(selectedTag);
-        post.classList.toggle('hidden', !isVisible);
-        if (isVisible) visiblePosts += 1;
-      });
-
-      sections.forEach((section) => {
-        const hasVisiblePosts = section.querySelector('[data-post-item]:not(.hidden)') !== null;
-        section.classList.toggle('hidden', !hasVisiblePosts);
-      });
-
-      if (emptyState) {
-        emptyState.classList.toggle('hidden', visiblePosts > 0);
-      }
-
-      const buttons = Array.from(root.querySelectorAll('[data-tag-filter]'));
-      buttons.forEach((button) => {
-        const isActive = button.getAttribute('data-tag-filter') === selectedTag;
-        button.setAttribute('aria-pressed', String(isActive));
-        button.classList.toggle(ACTIVE_CLASSES[0], isActive);
-        button.classList.toggle(ACTIVE_CLASSES[1], isActive);
-        button.classList.toggle(INACTIVE_CLASSES[0], !isActive);
-        button.classList.toggle(INACTIVE_CLASSES[1], !isActive);
-      });
-
-      const url = new URL(window.location.href);
-      if (selectedTag === 'all') url.searchParams.delete('tag');
-      else url.searchParams.set('tag', selectedTag);
-      window.history.replaceState({}, '', url.toString());
-    };
-
-    const initTagFilters = () => {
-      const root = document.querySelector('[data-writing-filters]');
-      if (!root || root.dataset.initialized === 'true') return;
-      root.dataset.initialized = 'true';
-
-      const buttons = Array.from(root.querySelectorAll('[data-tag-filter]'));
-      if (buttons.length === 0) return;
-
-      const requestedTag = (new URL(window.location.href).searchParams.get('tag') || 'all').toLowerCase();
-      const hasRequestedTag = buttons.some((button) => button.getAttribute('data-tag-filter') === requestedTag);
-      const initialTag = hasRequestedTag ? requestedTag : 'all';
-
-      buttons.forEach((button) => {
-        button.addEventListener('click', () => {
-          const selectedTag = button.getAttribute('data-tag-filter') || 'all';
-          applyFilter(root, selectedTag);
-        });
-      });
-
-      applyFilter(root, initialTag);
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initTagFilters, { once: true });
-    } else {
-      initTagFilters();
-    }
-    document.addEventListener('astro:page-load', initTagFilters);
-  })();
-</script>
